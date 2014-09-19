@@ -21,7 +21,8 @@ public class AlbumAdapter extends CursorAdapter {
 	static class ViewHolder{
 		RelativeLayout art;
 		TextView name;
-	}
+    }
+
 	
 	public AlbumAdapter(Context context, Cursor c, int flags) {
 		super(context, c, flags);
