@@ -9,6 +9,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +68,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 		actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         title= (TextView)findViewById(R.id.title);
+        title.setMovementMethod(new ScrollingMovementMethod());
         artist=(TextView)findViewById(R.id.name);
         art=(RelativeLayout)findViewById(R.id.art);
 
@@ -87,8 +89,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 			@Override
 			public void onClick(View v) {
 				viewfliper.showNext();
-				/*viewfliper.getCurrentView().setBackgroundColor(
-						getResources().getColor(R.color.orange));*/
 
 
 			}
@@ -104,8 +104,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 			}
 		});
 		
-		viewfliper.setInAnimation(this,android.R.anim.slide_in_left);
-		viewfliper.setOutAnimation(this,android.R.anim.slide_out_right);
+		viewfliper.setInAnimation(this,R.anim.push_right_in);
+		viewfliper.setOutAnimation(this,R.anim.push_right_out );
+        viewswitcher.setInAnimation(this,R.anim.fadein);
+        viewswitcher.setOutAnimation(this, R.anim.fadeout);
+
 	}
 
 	private void attachfrags() {
@@ -198,6 +201,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 	@Override
 	public void select(String select, String tag) {
 		viewfliper.showNext();
+
 		if (tag == albumbTag ) {
 			
 			try {
