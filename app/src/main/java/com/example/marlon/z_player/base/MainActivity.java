@@ -7,14 +7,17 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.widget.DrawerLayout;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +45,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
     TextView title;
     TextView artist;
-    RelativeLayout art;
+    ImageView art;
 
 
 	private static final int LOADER_songs = 1;
@@ -53,6 +56,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 	private final String artsitTag = "Artists";
 	private final String songTag = "Songs";
 	private final String playerTag = "Player";
+    DrawerLayout drawerLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +68,12 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 		getLoaderManager().initLoader(LOADER_albums, null, this);
 
 		fmanager = getFragmentManager();
-		actionbar = getActionBar();
-		actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		//actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         title= (TextView)findViewById(R.id.title);
         title.setMovementMethod(new ScrollingMovementMethod());
         artist=(TextView)findViewById(R.id.name);
-        art=(RelativeLayout)findViewById(R.id.art);
+        art=(ImageView)findViewById(R.id.art);
 
 		  
 		/*actionbar.addTab(actionbar.newTab().setText("Artist")
@@ -111,7 +114,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
 	}
 
-	private void attachfrags() {
+
+    private void attachfrags() {
 		fmanager.beginTransaction()
 				.add(R.id.mainPlayer, new PlayerFrag(), playerTag)
 				.add(R.id.artist_Frame, new ArtistFrag(), artsitTag)
@@ -237,7 +241,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
         title.setText(holder.title.getText());
         artist.setText(holder.artist.getText());
-        art.setBackground(holder.art.getBackground());
+        art.setImageDrawable(holder.img);
+
 
     }
 }

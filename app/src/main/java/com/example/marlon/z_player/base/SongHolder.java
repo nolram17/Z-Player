@@ -18,6 +18,7 @@ public class SongHolder{
     public FrameLayout art;
     public String path;
     private Activity activity;
+    public Drawable img;
 
     public SongHolder(Activity activity){
         this.activity=activity;
@@ -28,7 +29,6 @@ public class SongHolder{
         album.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
         track.setText(c.getPosition()+"");
         String art_path= getAlbumArt(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY)));
-        Drawable img;
         if ( art_path !=null) {
             img = Drawable.createFromPath(art_path);
         }else { img= activity.getResources().getDrawable(R.drawable.download);}

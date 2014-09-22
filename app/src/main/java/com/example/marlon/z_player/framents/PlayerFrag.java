@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -18,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.marlon.z_player.R;
 import com.example.marlon.z_player.base.MainActivity;
@@ -26,6 +28,9 @@ import com.example.marlon.z_player.support.ActivityReciever;
 import com.example.marlon.z_player.support.FragmentReciever;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class PlayerFrag extends Fragment implements FragmentReciever, OnClickListener {
 	Button next,back, play,openList;
@@ -34,7 +39,9 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 	SongHolder holder;
     SeekBar seekBar;
     Handler seekHandler = new Handler();
-    Thread seekThread;
+   SeekBarTask seekTask;
+    ToggleButton shuffled;
+    ArrayList<Integer>shuffle_indexes;
     int pos, delay = 1000;
     TextView duration,songprogess;
     private MainActivity parentActivity;
@@ -67,33 +74,18 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 
         songprogess=(TextView)view.findViewById(R.id.songprogress);
         duration=(TextView)view.findViewById(R.id.duration);
+        shuffled=(ToggleButton)view.findViewById(R.id.shuffle);
 
 		play.setOnClickListener(this);
 		next.setOnClickListener(this);
 		back.setOnClickListener(this);
         openList.setOnClickListener(this);
 
-        /*seekThread= new Thread( new Runnable() {
-            @Override
-            public void run() {
-                while(mediaPlayer!=null &&seekBar.getProgress()!=seekBar.getMax());{
-                    try{
-                        seekThread.sleep(delay);
-                        updateSeekbar();
-                    }
-                    catch (InterruptedException e){
-                        return;
-                    }
+
+        seekTask=new SeekBarTask();
 
 
-                }
-            }
-        });*/
-
-
-
-
-        seekHandler.postDelayed(new Runnable() {
+        /*seekHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(mediaPlayer!=null){
@@ -103,7 +95,7 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
                     seekHandler.postDelayed(this, delay);
                 }
             }
-        }, delay);
+        }, delay);*/
 
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -111,20 +103,19 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(mediaPlayer!= null && fromUser){
                     mediaPlayer.seekTo(progress);
+                    songprogess.setText(getTimeString(progress));
+
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.pause();
-
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.start();
-
             }
         });
 	}
@@ -140,10 +131,14 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 		playlist=cursor;
 
 		pos=playlist.getPosition();
-		//trackCount=playlist.getCount();
 		String path= playlist.getString(playlist.getColumnIndex(MediaStore.Audio.Media.DATA));
-
-		holder.setMetaData(playlist);
+        shuffle_indexes= new ArrayList<Integer>();
+        for (int i=0;i<playlist.getCount();i++)
+        {
+            shuffle_indexes.add(i);
+        }
+        Collections.shuffle(shuffle_indexes);
+        holder.setMetaData(playlist);
 		prepSource(path);
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -162,12 +157,10 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 		if(mediaPlayer.isPlaying()){
            img=parentActivity.getResources().getDrawable(R.drawable.ic_play);
             mediaPlayer.pause();
-
         }
 		else{
             img= parentActivity.getResources().getDrawable(R.drawable.ic_pause);
             mediaPlayer.start();
-
         }
         play.setBackground(img);
 	}
@@ -209,14 +202,20 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 
     }
 	private void back() {
-        try {
-            pos = (pos - 1) % playlist.getCount();
-            playlist.moveToPosition(pos);
+        pos = (pos - 1) % playlist.getCount();
+        if(shuffled.isChecked()){
+           playlist.moveToPosition(shuffle_indexes.get(pos));
         }
-        catch (CursorIndexOutOfBoundsException e) {
-            pos = playlist.getCount() - 1;
-            playlist.moveToPosition(pos);
+        else {
+            try {
+                playlist.moveToPosition(pos);
+            } catch (CursorIndexOutOfBoundsException e) {
+                pos = playlist.getCount() - 1;
+                playlist.moveToPosition(pos);
+            }
         }
+
+
         String path = playlist.getString(playlist.getColumnIndex(MediaStore.Audio.Media.DATA));
         holder.setMetaData(playlist);
         prepSource(path);
@@ -230,6 +229,8 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
             seekBar.setMax(mediaPlayer.getDuration());
             ActivityReciever reciever= (ActivityReciever)getActivity();
             reciever.setHolder(holder);
+            seekTask.execute();
+
 			
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -249,10 +250,12 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 	}
 	private void next() {
         pos=(pos+1)%(playlist.getCount());
-		playlist.moveToPosition(pos);
-		/*if(playlist.isAfterLast()){
-			playlist.moveToFirst();
-		}*/
+		if(shuffled.isChecked()){
+			playlist.moveToPosition(shuffle_indexes.get(pos));
+		}else {
+
+            playlist.moveToPosition(pos);
+        }
 		String path= playlist.getString(playlist.getColumnIndex(MediaStore.Audio.Media.DATA));
 		holder.setMetaData(playlist);
 		prepSource(path);
@@ -275,5 +278,30 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
         return buf.toString();
     }
 
+    class SeekBarTask extends AsyncTask<Void, Void,Void>{
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while(mediaPlayer.getCurrentPosition()<mediaPlayer.getDuration()) {
+                publishProgress();
+                try {
+                    Thread.sleep(delay);
+                }
+                catch (InterruptedException e) {
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            if (mediaPlayer.isPlaying()){
+                updateSeekbar();
+            }
+
+
+        }
+    }
 
 }
