@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -29,7 +30,6 @@ import com.example.marlon.z_player.support.FragmentReciever;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class PlayerFrag extends Fragment implements FragmentReciever, OnClickListener {
@@ -38,11 +38,10 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 	Cursor playlist;
 	SongHolder holder;
     SeekBar seekBar;
-    Handler seekHandler = new Handler();
-   SeekBarTask seekTask;
-    ToggleButton shuffled;
+    SeekBarTask seekTask;
+    ToggleButton shuffle;
     ArrayList<Integer>shuffle_indexes;
-    int pos, delay = 1000;
+    int playlistIndex, delay = 1000;
     TextView duration,songprogess;
     private MainActivity parentActivity;
 
@@ -74,7 +73,7 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 
         songprogess=(TextView)view.findViewById(R.id.songprogress);
         duration=(TextView)view.findViewById(R.id.duration);
-        shuffled=(ToggleButton)view.findViewById(R.id.shuffle);
+        shuffle =(ToggleButton)view.findViewById(R.id.shuffle);
 
 		play.setOnClickListener(this);
 		next.setOnClickListener(this);
@@ -85,17 +84,6 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
         seekTask=new SeekBarTask();
 
 
-        /*seekHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(mediaPlayer!=null){
-                    if(mediaPlayer.isPlaying()){
-                        updateSeekbar();
-                    }
-                    seekHandler.postDelayed(this, delay);
-                }
-            }
-        }, delay);*/
 
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -129,8 +117,7 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
     @Override
 	public void setCursor(Cursor cursor) {
 		playlist=cursor;
-
-		pos=playlist.getPosition();
+		playlistIndex =playlist.getPosition();
 		String path= playlist.getString(playlist.getColumnIndex(MediaStore.Audio.Media.DATA));
         shuffle_indexes= new ArrayList<Integer>();
         for (int i=0;i<playlist.getCount();i++)
@@ -146,7 +133,19 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
                 if (mediaPlayer!=null){next();}
             }
         });
-
+        shuffle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Drawable img;
+                if(b){img=parentActivity.getResources().getDrawable(R.drawable.ic_shuffle_on);
+                       Collections.shuffle(shuffle_indexes);}
+                else{
+                    img=parentActivity.getResources().getDrawable(R.drawable.ic_shuffle_off);
+                    playlistIndex =Integer.parseInt(holder.track.getText().toString());
+                }
+                compoundButton.setBackground(img);
+            }
+        });
 
 
 
@@ -202,17 +201,13 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 
     }
 	private void back() {
-        pos = (pos - 1) % playlist.getCount();
-        if(shuffled.isChecked()){
-           playlist.moveToPosition(shuffle_indexes.get(pos));
+        playlistIndex = (playlistIndex - 1) % playlist.getCount();
+        if (playlistIndex<0){playlistIndex=playlist.getCount()-1;}
+        if(shuffle.isChecked()){
+           playlist.moveToPosition(shuffle_indexes.get(playlistIndex));
         }
         else {
-            try {
-                playlist.moveToPosition(pos);
-            } catch (CursorIndexOutOfBoundsException e) {
-                pos = playlist.getCount() - 1;
-                playlist.moveToPosition(pos);
-            }
+                playlist.moveToPosition(playlistIndex);
         }
 
 
@@ -249,12 +244,11 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 		
 	}
 	private void next() {
-        pos=(pos+1)%(playlist.getCount());
-		if(shuffled.isChecked()){
-			playlist.moveToPosition(shuffle_indexes.get(pos));
+        playlistIndex =(playlistIndex +1)%(playlist.getCount());
+		if(shuffle.isChecked()){
+			playlist.moveToPosition(shuffle_indexes.get(playlistIndex));
 		}else {
-
-            playlist.moveToPosition(pos);
+            playlist.moveToPosition(playlistIndex);
         }
 		String path= playlist.getString(playlist.getColumnIndex(MediaStore.Audio.Media.DATA));
 		holder.setMetaData(playlist);

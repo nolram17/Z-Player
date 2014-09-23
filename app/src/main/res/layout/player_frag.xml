@@ -150,14 +150,20 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
 
-            <ToggleButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New ToggleButton"
-                android:id="@+id/shuffle"
-                android:layout_gravity="left|bottom"
-                android:checked="false" />
         </FrameLayout>
+
+        <ToggleButton
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/shuffle"
+            android:layout_gravity="left|bottom"
+            android:checked="false"
+            android:textOff=""
+            android:textOn=""
+            android:background="@drawable/ic_shuffle_off"
+            android:layout_below="@+id/art"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
     </RelativeLayout>
 
