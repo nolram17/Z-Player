@@ -1,127 +1,140 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.mytunez.SelectionActivity_old"
-    tools:ignore="MergeRootFrame" >
+    android:layout_height="match_parent">
 
-    <ViewSwitcher
-        android:id="@+id/change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
 
-        <RelativeLayout
-            android:id="@+id/selection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/default_background">
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ViewSwitcher
+            android:id="@+id/change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true" >
 
             <RelativeLayout
-                android:id="@+id/playist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/topbar">
-
-                <ViewFlipper
-                    android:id="@+id/target"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/nowPlaying"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true" >
-
-                    <FrameLayout
-                        android:id="@+id/artist_Frame"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:id="@+id/album_Frame"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:id="@+id/song_Frame"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </FrameLayout>
-                </ViewFlipper>
+                android:id="@+id/selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/default_background">
 
                 <RelativeLayout
-                    android:id="@+id/nowPlaying"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:background="@android:color/holo_orange_dark">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="fill_parent"
-                        android:id="@+id/art"
-                        android:background="@drawable/download"/>
-
-                    <TextView
-                        android:id="@+id/name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="89dp"
-                        android:text=""
-                        android:textColor="@android:color/white"
-                        />
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="80dp"
-                        android:layout_height="20dp"
-                        android:layout_alignLeft="@+id/name"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:text=""
-                        android:textColor="@android:color/white"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                </RelativeLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:layout_alignBottom="@+id/next_frame"
-                android:layout_toRightOf="@+id/next_frame"
-                android:layout_toEndOf="@+id/next_frame"
-                android:id="@+id/topbar"
-                android:background="@android:color/holo_orange_dark">
-
-                <Button
-                    android:id="@+id/next_frame"
+                    android:id="@+id/playist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Button"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_below="@+id/topbar">
+
+                    <ViewFlipper
+                        android:id="@+id/target"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/nowPlaying"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true" >
+
+                        <FrameLayout
+                            android:id="@+id/artist_Frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/album_Frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/song_Frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+                        </FrameLayout>
+                    </ViewFlipper>
+
+                    <RelativeLayout
+                        android:id="@+id/nowPlaying"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:background="@android:color/holo_orange_dark">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/art"
+                            android:background="@drawable/download"/>
+
+                        <TextView
+                            android:id="@+id/name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="89dp"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            />
+
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="80dp"
+                            android:layout_height="20dp"
+                            android:layout_alignLeft="@+id/name"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:text=""
+                            android:textColor="@android:color/white"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignBottom="@+id/next_frame"
+                    android:layout_toRightOf="@+id/next_frame"
+                    android:layout_toEndOf="@+id/next_frame"
+                    android:id="@+id/topbar"
+                    android:background="@android:color/holo_orange_dark">
+
+                    <Button
+                        android:id="@+id/next_frame"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="Button"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+                </RelativeLayout>
+
             </RelativeLayout>
 
-        </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/mainPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
 
-        <FrameLayout
-            android:id="@+id/mainPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            </FrameLayout>
 
-        </FrameLayout>
+        </ViewSwitcher>
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/drawer_options"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@android:color/white">
+    </ListView>
 
-    </ViewSwitcher>
 
-</RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>

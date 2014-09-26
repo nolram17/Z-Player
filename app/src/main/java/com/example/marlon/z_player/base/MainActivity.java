@@ -16,8 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +37,7 @@ import com.example.marlon.z_player.support.FragmentReciever;
 
 
 public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
-        ActivityReciever {
+        ActivityReciever,AdapterView.OnItemClickListener {
 
 
 	ActionBar actionbar;
@@ -57,6 +60,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 	private final String songTag = "Songs";
 	private final String playerTag = "Player";
     DrawerLayout drawerLayout;
+    ListView drawerList;
+    String[] drawerOptions;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,35 +73,21 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 		getLoaderManager().initLoader(LOADER_albums, null, this);
 
 		fmanager = getFragmentManager();
-		//actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionbar=getActionBar();
+		actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
         title= (TextView)findViewById(R.id.title);
         title.setMovementMethod(new ScrollingMovementMethod());
         artist=(TextView)findViewById(R.id.name);
         art=(ImageView)findViewById(R.id.art);
 
-		  
-		/*actionbar.addTab(actionbar.newTab().setText("Artist")
-		  .setTabListener(new MusicTabListener(new ArtistFrag(),"2",this)));
-		actionbar.addTab(actionbar.newTab().setText("Albums")
-		  .setTabListener(new MusicTabListener(new AlbumFrag(),"1",this)));
-		actionbar.addTab(actionbar.newTab().setText("Songs")
-		  .setTabListener(new MusicTabListener(new SongFrag(),"3",this)));
-		*/ 
 		attachfrags();
+        drawerOptions=getResources().getStringArray(R.array.options);
+        drawerList=(ListView)findViewById(R.id.drawer_options);
+        drawerList.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,drawerOptions));
+        drawerList.setOnItemClickListener(this);
 		viewswitcher=(ViewSwitcher)findViewById(R.id.change);
 		viewfliper = (ViewFlipper) findViewById(R.id.target);
-		Button nextview = (Button) findViewById(R.id.next_frame);
-		nextview.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				viewfliper.showNext();
-
-
-			}
-		});
-		
 		RelativeLayout miniPlayer= (RelativeLayout)findViewById(R.id.nowPlaying);
 		miniPlayer.setOnClickListener(new OnClickListener() {
 						
@@ -237,12 +228,16 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
     @Override
     public void setHolder(SongHolder holder) {
-
-
         title.setText(holder.title.getText());
         artist.setText(holder.artist.getText());
         art.setImageDrawable(holder.img);
+    }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        if (viewswitcher.getCurrentView().getId()==R.id.mainPlayer){viewswitcher.setDisplayedChild(0);}
+        viewfliper.setDisplayedChild(position);
+        //drawerLayout.closeDrawer;
 
     }
 }

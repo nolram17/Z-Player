@@ -10,5 +10,10 @@
     <string name="playlist">playlist</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string-array name="options">
+        <item>Artist</item>
+        <item>Ablums</item>
+        <item>Songs</item>
+    </string-array>
 
 </resources>
