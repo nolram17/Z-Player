@@ -10,46 +10,27 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/default_background"
+        android:background="@color/deep_dark"
         >
 
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:progressDrawable="@drawable/progress"
+            android:thumb="@drawable/thumb"
+            android:layout_above="@+id/songprogress"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="54dp"
-            />
-
-        <Button
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_rr"
-            android:layout_above="@+id/seekBar"
-            android:layout_toLeftOf="@+id/play_pause"
-            android:layout_toStartOf="@+id/play_pause"
-            android:layout_marginRight="29dp" />
-
-        <Button
-            android:id="@+id/next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_ff"
-            android:layout_above="@+id/seekBar"
-            android:layout_toRightOf="@+id/play_pause"
-            android:layout_toEndOf="@+id/play_pause"
-            android:layout_marginLeft="33dp" />
+            android:layout_alignParentStart="true" />
 
         <RelativeLayout
             android:id="@+id/topbar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:layout_alignParentTop="true"
-            android:layout_above="@+id/art"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:background="@color/blood_darker">
 
             <TextView
                 android:id="@+id/artist"
@@ -59,17 +40,19 @@
                 android:textColor="@android:color/white"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/album"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="22dp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
                 android:text="TextView"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/track"
@@ -79,8 +62,7 @@
                 android:textColor="@android:color/white"
                 android:layout_toEndOf="@+id/artist"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_toRightOf="@+id/artist" />
 
             <TextView
                 android:id="@+id/title"
@@ -89,56 +71,79 @@
                 android:textColor="@android:color/white"
                 android:text="Large Text"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_below="@+id/artist" />
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_toLeftOf="@+id/album"
+                android:layout_toStartOf="@+id/album" />
 
             <Button
                 android:id="@+id/openplaylist"
-                android:layout_width="75dp"
-                android:layout_height="50dp"
-                android:background="@drawable/ic_playlist"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/playlist_button"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/play_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/next"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/ic_pause"/>
-
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/back"
+            android:layout_height="80dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:id="@+id/bottombar"
+            android:background="@color/blood_darker"
+            android:layout_alignParentBottom="true">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Small Text"
-                android:id="@+id/songprogress"
-                android:layout_alignParentBottom="true"
+            <Button
+                android:id="@+id/next"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/nextbutton"
+
+                android:layout_toStartOf="@+id/duration"
+                android:layout_toEndOf="@+id/play_pause"
+                android:layout_marginLeft="34dp"
+                android:layout_alignBottom="@+id/play_pause"
+                android:layout_toRightOf="@+id/play_pause" />
+
+            <ToggleButton
+                android:id="@+id/play_pause"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:textOff=""
+                android:textOn=""
+                android:background="@drawable/playbutton"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
+            <ToggleButton
+                android:id="@+id/shuffle"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="left|bottom"
+                android:checked="false"
+                android:textOff=""
+                android:textOn=""
+                android:background="@drawable/shuffle"
+
+                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:textColor="@android:color/white"/>
+                android:layout_marginLeft="5dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Small Text"
-                android:id="@+id/duration"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:textColor="@android:color/white"/>
+            <Button
+                android:id="@+id/back"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:background="@drawable/backbutton"
+
+                android:layout_toStartOf="@+id/play_pause"
+                android:layout_marginRight="36dp"
+                android:layout_alignBottom="@+id/play_pause"
+                android:layout_toLeftOf="@+id/play_pause" />
 
         </RelativeLayout>
 
@@ -146,24 +151,34 @@
             android:layout_width="fill_parent"
             android:layout_height="300dp"
             android:id="@+id/art"
-            android:layout_above="@+id/back"
+            android:layout_below="@+id/topbar"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/seekBar">
 
         </FrameLayout>
 
-        <ToggleButton
-            android:layout_width="55dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/shuffle"
-            android:layout_gravity="left|bottom"
-            android:checked="false"
-            android:textOff=""
-            android:textOn=""
-            android:background="@drawable/ic_shuffle_off"
-            android:layout_below="@+id/art"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/songprogress"
+            android:textColor="@android:color/white"
+            android:layout_above="@+id/bottombar"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/duration"
+            android:textColor="@android:color/white"
+            android:layout_below="@+id/seekBar"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

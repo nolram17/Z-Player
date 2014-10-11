@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item >
+        <selector>
+            <item android:state_pressed="true">
+                <shape android:shape="rectangle" android:padding="10dp">
+                    <solid android:color="@color/snow_primary"/>
+                </shape>
+            </item>
+
+            <item>
+                <shape android:shape="rectangle" android:padding="10dp">
+                    <solid android:color="@color/deep_dark"/>
+                </shape>
+            </item>
+
+        </selector>
+    </item>
+
+    <item  android:drawable="@drawable/nav_icon"/>
+
+</layer-list>

@@ -22,99 +22,73 @@
                 android:id="@+id/selection"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/default_background">
+                android:background="@color/blood_darker">
 
                 <RelativeLayout
-                    android:id="@+id/playist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/topbar">
+                    android:id="@+id/nowPlaying"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/layout_selected">
 
-                    <ViewFlipper
-                        android:id="@+id/target"
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/art"
+                        android:background="@drawable/download"/>
+
+                    <TextView
+                        android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/nowPlaying"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true" >
-
-                        <FrameLayout
-                            android:id="@+id/artist_Frame"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-                        </FrameLayout>
-
-                        <FrameLayout
-                            android:id="@+id/album_Frame"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-                        </FrameLayout>
-
-                        <FrameLayout
-                            android:id="@+id/song_Frame"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-                        </FrameLayout>
-                    </ViewFlipper>
-
-                    <RelativeLayout
-                        android:id="@+id/nowPlaying"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
-                        android:background="@android:color/holo_orange_dark">
+                        android:layout_marginLeft="89dp"
+                        android:text=""
+                        android:textColor="@color/dark_light"
+                        />
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="fill_parent"
-                            android:id="@+id/art"
-                            android:background="@drawable/download"/>
-
-                        <TextView
-                            android:id="@+id/name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="89dp"
-                            android:text=""
-                            android:textColor="@android:color/white"
-                            />
-
-                        <TextView
-                            android:id="@+id/title"
-                            android:layout_width="80dp"
-                            android:layout_height="20dp"
-                            android:layout_alignLeft="@+id/name"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
-                            android:text=""
-                            android:textColor="@android:color/white"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                    </RelativeLayout>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignBottom="@+id/next_frame"
-                    android:layout_toRightOf="@+id/next_frame"
-                    android:layout_toEndOf="@+id/next_frame"
-                    android:id="@+id/topbar"
-                    android:background="@android:color/holo_orange_dark">
-
-                    <Button
-                        android:id="@+id/next_frame"
-                        android:layout_width="50dp"
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="80dp"
                         android:layout_height="wrap_content"
-                        android:text="Button"
+                        android:maxLines="1"
+                        android:layout_alignLeft="@+id/name"
+                        android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:text=""
+                        android:textColor="@color/dark_light"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
+
                 </RelativeLayout>
+
+                <ViewFlipper
+                    android:id="@+id/target"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/nowPlaying"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true">
+
+                    <FrameLayout
+                        android:id="@+id/artist_Frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/album_Frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/song_Frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </FrameLayout>
+                </ViewFlipper>
 
             </RelativeLayout>
 
@@ -127,13 +101,50 @@
 
         </ViewSwitcher>
     </RelativeLayout>
-    <ListView
-        android:id="@+id/drawer_options"
+    <FrameLayout
+        android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_gravity="left"
-        android:background="@android:color/white">
-    </ListView>
+        android:layout_gravity="left">
+
+
+
+        <ListView
+            android:id="@+id/drawer_options"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:background="@color/blood_darker">
+        </ListView>
+
+    </FrameLayout>
+    <RelativeLayout
+        android:id="@+id/right_drawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@color/blossom_light">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Now Playing"
+            android:background="@color/deep_dark"
+            android:textColor="@color/blossom_light"
+            android:id="@+id/textView" />
+
+        <ListView
+            android:id="@+id/currentPlaylist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp"
+            android:layout_below="@+id/textView">
+
+        </ListView>
+
+        </RelativeLayout>
+
 
 
 

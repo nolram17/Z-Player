@@ -2,6 +2,24 @@
 <pre-dex-items>
 
     <item
+        dex="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-8a0c18cfd4baff72c5c2a71469aa47c7a3089f56.jar"
+        jar="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33"/>
+    <item
+        dex="F:\Android Work\Z-Player\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-c1f4b5c200e743965f240e4629269c44871b3680.jar"
+        jar="F:\Android Work\Z-Player\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
+    <item
+        dex="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\pre-dexed\debug\classes-39eda61691c3871bd2f65dc0073335cf32684d31.jar"
+        jar="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="e128103d5281ddd26195a7f980b36d0d005a4e56"/>
+    <item
         dex="F:\Android Work\Z-Player\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-ec756862ae8003d7e8c872cbc87e2012e5f8931b.jar"
         jar="F:\Android Work\Z-Player\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
         jumboMode="false"
@@ -20,12 +38,6 @@
         revision="20.0.0"
         sha1="8694693636ab36910c8100ce527c258ff3ebece0"/>
     <item
-        dex="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-8a0c18cfd4baff72c5c2a71469aa47c7a3089f56.jar"
-        jar="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\libs\internal_impl-20.0.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="27bbd3982cdfe4468a9bf99c8c773734a9049e33"/>
-    <item
         dex="F:\Android Work\Z-Player\app\build\intermediates\pre-dexed\debug\classes-2ba67db012968a932f62ab2364f8c86e53f6e9a7.jar"
         jar="F:\Android Work\Z-Player\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\classes.jar"
         jumboMode="false"
@@ -43,17 +55,5 @@
         jumboMode="false"
         revision="20.0.0"
         sha1="9d9013e9ff35fc3756411e62873c363c70c638fa"/>
-    <item
-        dex="F:\Android Work\Z-Player\app\build\intermediates\pre-dexed\debug\internal_impl-20.0.0-c1f4b5c200e743965f240e4629269c44871b3680.jar"
-        jar="F:\Android Work\Z-Player\app\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\libs\internal_impl-20.0.0.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="e40b3078e3fbd353c9f44da8df25a8fc0078209d"/>
-    <item
-        dex="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\pre-dexed\debug\classes-39eda61691c3871bd2f65dc0073335cf32684d31.jar"
-        jar="C:\Users\Marlon\AndroidStudioProjects\Z-player\app\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\classes.jar"
-        jumboMode="false"
-        revision="20.0.0"
-        sha1="e128103d5281ddd26195a7f980b36d0d005a4e56"/>
 
 </pre-dex-items>

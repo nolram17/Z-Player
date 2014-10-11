@@ -27,7 +27,7 @@ public class SongHolder{
         artist.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
         title.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE)));
         album.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
-        track.setText(c.getPosition()+"");
+        track.setText(c.getPosition()+"/"+c.getCount());
         String art_path= getAlbumArt(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY)));
         if ( art_path !=null) {
             img = Drawable.createFromPath(art_path);

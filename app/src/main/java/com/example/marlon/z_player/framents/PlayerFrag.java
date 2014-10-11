@@ -1,15 +1,15 @@
 package com.example.marlon.z_player.framents;
 
-import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
-import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import android.widget.ToggleButton;
 
 import com.example.marlon.z_player.R;
 import com.example.marlon.z_player.base.MainActivity;
+import com.example.marlon.z_player.base.SongAdapter;
 import com.example.marlon.z_player.base.SongHolder;
 import com.example.marlon.z_player.support.ActivityReciever;
 import com.example.marlon.z_player.support.FragmentReciever;
@@ -32,18 +34,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class PlayerFrag extends Fragment implements FragmentReciever, OnClickListener {
-	Button next,back, play,openList;
+public class PlayerFrag extends Fragment implements FragmentReciever, OnClickListener ,CompoundButton.OnCheckedChangeListener,AudioManager.OnAudioFocusChangeListener {
+	Button next,back, openList;
 	MediaPlayer mediaPlayer;
 	Cursor playlist;
 	SongHolder holder;
     SeekBar seekBar;
     SeekBarTask seekTask;
-    ToggleButton shuffle;
+    ToggleButton shuffle_toggle ,play;
     ArrayList<Integer>shuffle_indexes;
     int playlistIndex, delay = 1000;
-    TextView duration,songprogess;
+    TextView duration, songprogress;
     private MainActivity parentActivity;
+    AudioManager audioManager;
 
 	
 
@@ -52,11 +55,13 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 			Bundle savedInstanceState) {
 		View view= inflater.inflate(R.layout.player_frag,container,false);
 		init_controls(view);
+        audioManager= (AudioManager)parentActivity.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(this,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
 
 		return view;
 	}
 	private void init_controls(View view) {
-		play= (Button)view.findViewById(R.id.play_pause);
+		play= (ToggleButton)view.findViewById(R.id.play_pause);
 		next=(Button)view.findViewById(R.id.next);
 		back=(Button)view.findViewById(R.id.back);
         openList=(Button)view.findViewById(R.id.openplaylist);
@@ -71,39 +76,37 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 		holder.track=(TextView)view.findViewById(R.id.track);
         holder.art=(FrameLayout)view.findViewById(R.id.art);
 
-        songprogess=(TextView)view.findViewById(R.id.songprogress);
+        songprogress =(TextView)view.findViewById(R.id.songprogress);
         duration=(TextView)view.findViewById(R.id.duration);
-        shuffle =(ToggleButton)view.findViewById(R.id.shuffle);
+        shuffle_toggle =(ToggleButton)view.findViewById(R.id.shuffle);
 
-		play.setOnClickListener(this);
+		play.setOnCheckedChangeListener(this);
 		next.setOnClickListener(this);
 		back.setOnClickListener(this);
         openList.setOnClickListener(this);
 
-
+        //Background activity for tracking the sound progress
         seekTask=new SeekBarTask();
 
-
-
-
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            boolean wasPlaying;
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if(mediaPlayer!= null && fromUser){
                     mediaPlayer.seekTo(progress);
-                    songprogess.setText(getTimeString(progress));
-
+                    songprogress.setText(getTimeString(progress));
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                wasPlaying=mediaPlayer.isPlaying();
                 mediaPlayer.pause();
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.start();
+                 if(wasPlaying){mediaPlayer.start();}
             }
         });
 	}
@@ -111,7 +114,7 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
     private  void updateSeekbar(){
         seekBar.setProgress(mediaPlayer.getCurrentPosition());
         duration.setText(getTimeString(mediaPlayer.getDuration()));
-        songprogess.setText(getTimeString(mediaPlayer.getCurrentPosition()));
+        songprogress.setText(getTimeString(mediaPlayer.getCurrentPosition()));
     }
 
     @Override
@@ -126,42 +129,33 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
         }
         Collections.shuffle(shuffle_indexes);
         holder.setMetaData(playlist);
+        if(!play.isChecked()){play.toggle();}
 		prepSource(path);
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                if (mediaPlayer!=null){next();}
+                if (mediaPlayer.getCurrentPosition()>0&&mediaPlayer!=null){next();}
             }
         });
-        shuffle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Drawable img;
-                if(b){img=parentActivity.getResources().getDrawable(R.drawable.ic_shuffle_on);
-                       Collections.shuffle(shuffle_indexes);}
-                else{
-                    img=parentActivity.getResources().getDrawable(R.drawable.ic_shuffle_off);
-                    playlistIndex =Integer.parseInt(holder.track.getText().toString());
-                }
-                compoundButton.setBackground(img);
-            }
-        });
+        shuffle_toggle.setOnCheckedChangeListener(this);
+        ListView current= (ListView)parentActivity.findViewById(R.id.currentPlaylist);
+        current.setAdapter(new SongAdapter(parentActivity,playlist,0));
 
 
-
-	}
+    }
 
 	private void play() {
-        Drawable img;
-		if(mediaPlayer.isPlaying()){
-           img=parentActivity.getResources().getDrawable(R.drawable.ic_play);
-            mediaPlayer.pause();
+
+
+        if (!play.isChecked()){
+            if(mediaPlayer.isPlaying())
+                mediaPlayer.pause();
+
         }
-		else{
-            img= parentActivity.getResources().getDrawable(R.drawable.ic_pause);
+        else
             mediaPlayer.start();
-        }
-        play.setBackground(img);
+
+
 	}
 	@Override
 	public void setSearch(String variable) {
@@ -173,9 +167,6 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
         if (mediaPlayer!=null) {
             switch (v.getId()) {
 
-                case R.id.play_pause:
-                    play();
-                    break;
                 case R.id.next:
                     next();
                     break;
@@ -184,26 +175,17 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
                     break;
 
                 case R.id.openplaylist:
-                    parentActivity.viewswitcher.showPrevious();
-                    // showList();
+                    ((DrawerLayout)parentActivity.findViewById(R.id.drawer)).openDrawer(Gravity.RIGHT);
                     break;
             }
         }else{
-            Toast.makeText(parentActivity,"No media selected",Toast.LENGTH_LONG);}
+            Toast.makeText(parentActivity,"No media selected",Toast.LENGTH_LONG).show();}
 	}
-    private  void showList(){
-        Dialog dialog= new Dialog(getActivity());
-        LayoutInflater inflater= getActivity().getLayoutInflater();
-        View list= inflater.inflate(R.layout.now_playing_layout,null,false);
 
-        dialog.setContentView(list);
-        dialog.show();
-
-    }
 	private void back() {
         playlistIndex = (playlistIndex - 1) % playlist.getCount();
         if (playlistIndex<0){playlistIndex=playlist.getCount()-1;}
-        if(shuffle.isChecked()){
+        if(shuffle_toggle.isChecked()){
            playlist.moveToPosition(shuffle_indexes.get(playlistIndex));
         }
         else {
@@ -225,8 +207,6 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
             ActivityReciever reciever= (ActivityReciever)getActivity();
             reciever.setHolder(holder);
             seekTask.execute();
-
-			
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,11 +221,12 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 			e.printStackTrace();
 		}
 		play();
+
 		
 	}
 	private void next() {
         playlistIndex =(playlistIndex +1)%(playlist.getCount());
-		if(shuffle.isChecked()){
+		if(shuffle_toggle.isChecked()){
 			playlist.moveToPosition(shuffle_indexes.get(playlistIndex));
 		}else {
             playlist.moveToPosition(playlistIndex);
@@ -272,12 +253,44 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
         return buf.toString();
     }
 
+    public void onCheckedChanged(CompoundButton compoundButton, boolean on) {
+        switch (compoundButton.getId()){
+
+            case R.id.shuffle:
+                if (on) {
+                    Collections.shuffle(shuffle_indexes);
+                } else {
+                    playlistIndex = Integer.parseInt(holder.track.getText().toString());
+                }
+                break;
+            case R.id.play_pause:
+                play();
+                break;
+        }
+
+
+
+    }
+
+    @Override
+    public void onAudioFocusChange(int focus) {
+        boolean wasplaying=play.isChecked();
+        if(focus<=0){
+            if(play.isChecked())
+                {play.toggle();}
+        }
+        else {
+            if(wasplaying)
+                {play.toggle();}
+        }
+    }
+
     class SeekBarTask extends AsyncTask<Void, Void,Void>{
 
 
         @Override
         protected Void doInBackground(Void... voids) {
-            while(mediaPlayer.getCurrentPosition()<mediaPlayer.getDuration()) {
+            while(!this.isCancelled()) {
                 publishProgress();
                 try {
                     Thread.sleep(delay);
@@ -290,11 +303,7 @@ public class PlayerFrag extends Fragment implements FragmentReciever, OnClickLis
 
         @Override
         protected void onProgressUpdate(Void... values) {
-            if (mediaPlayer.isPlaying()){
-                updateSeekbar();
-            }
-
-
+            updateSeekbar();
         }
     }
 

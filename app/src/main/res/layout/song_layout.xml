@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/darker_gray">
+        android:background="@color/blood_darker">
 
         <TextView
             android:id="@+id/title"
@@ -19,7 +19,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:text="Large Text"
-            android:textColor="@android:color/white"
+            android:textColor="@color/blossom_light"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="Small Text"
-            android:textColor="@android:color/white"
+            android:textColor="@color/blossom_light"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_below="@+id/title"
             android:layout_marginTop="19dp"
             android:text="Small Text"
-            android:textColor="@android:color/white"
+            android:textColor="@color/blossom_light"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>
