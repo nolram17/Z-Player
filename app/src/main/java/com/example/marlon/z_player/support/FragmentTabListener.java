@@ -10,14 +10,11 @@ import android.app.FragmentTransaction;
 import com.example.marlon.z_player.R;
 
 
-public class MusicTabListener implements TabListener {
+public class FragmentTabListener implements TabListener {
 	private final Fragment fragment;
-	private String tag;
-	private FragmentManager fm;
-	public MusicTabListener(Fragment fragment ,String tag,Activity activity) {
+	public FragmentTabListener(Fragment fragment, String tag, Activity activity) {
 		this.fragment=fragment;
-		this.tag=tag;
-		this.fm= activity.getFragmentManager();
+
 		
 		
 	}
@@ -25,18 +22,13 @@ public class MusicTabListener implements TabListener {
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		
-		
-		ft.replace(R.id.target, fragment,tag);
-		
+		ft.show(fragment);
 
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		 
-		//ft.remove(fragment);
-		
-		
+		 ft.hide(fragment);
 	}
 
 	@Override

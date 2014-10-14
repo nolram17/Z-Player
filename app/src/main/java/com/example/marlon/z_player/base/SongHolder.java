@@ -19,6 +19,16 @@ public class SongHolder{
     public String path;
     private Activity activity;
     public Drawable img;
+    public  int track_num;
+    public static String[]colmns_used= {
+            MediaStore.Audio.Media._ID,
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.TITLE,
+            MediaStore.Audio.Media.ALBUM,
+            MediaStore.Audio.Media.ALBUM_KEY,
+            MediaStore.Audio.Media.DATA
+
+    };
 
     public SongHolder(Activity activity){
         this.activity=activity;
@@ -27,7 +37,8 @@ public class SongHolder{
         artist.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ARTIST)));
         title.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.TITLE)));
         album.setText(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM)));
-        track.setText(c.getPosition()+"/"+c.getCount());
+        track_num=c.getPosition();
+        track.setText((track_num+1)+"/"+c.getCount());
         String art_path= getAlbumArt(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY)));
         if ( art_path !=null) {
             img = Drawable.createFromPath(art_path);

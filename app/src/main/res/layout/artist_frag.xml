@@ -3,25 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ListView
-        android:id="@+id/artistlist"
-        android:layout_width="match_parent"
+    <ViewFlipper
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/fragtitle" >
+        android:id="@+id/viewFlipper" >
 
-    </ListView>
+        <ListView
+            android:id="@+id/artistlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true">
 
-    <TextView
-        android:id="@+id/fragtitle"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="TextView"
-        android:background="@color/blood_dark"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/snow_primary"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        </ListView>
+
+        <GridView
+            android:id="@+id/albumList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="2">
+        </GridView>
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/songlist" />
+    </ViewFlipper>
 
 </RelativeLayout>

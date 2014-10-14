@@ -23,7 +23,6 @@ public class ArtistAdapter extends CursorAdapter {
 	public void bindView(View view, Context context, Cursor cursor) {
 		ViewHolder holder=(ViewHolder)view.getTag();
         holder.artist.setText(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST)));
-        holder.count.setText("Songs:"+cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS)));
 
 	}
 
@@ -33,7 +32,6 @@ public class ArtistAdapter extends CursorAdapter {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 		View view = inflater.inflate(R.layout.artist_layout, parent, false);
 		holder.artist=(TextView)view.findViewById(R.id.name);
-		holder.count=(TextView)view.findViewById(R.id.number);
         view.setTag(holder);
 		return view;
 	}

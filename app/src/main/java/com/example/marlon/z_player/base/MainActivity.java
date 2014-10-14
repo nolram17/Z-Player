@@ -6,14 +6,12 @@ import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.res.Configuration;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
-import android.text.method.ScrollingMovementMethod;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,12 +31,12 @@ import com.example.marlon.z_player.framents.AlbumFrag;
 import com.example.marlon.z_player.framents.ArtistFrag;
 import com.example.marlon.z_player.framents.PlayerFrag;
 import com.example.marlon.z_player.framents.SongFrag;
-import com.example.marlon.z_player.support.ActivityReciever;
-import com.example.marlon.z_player.support.FragmentReciever;
+import com.example.marlon.z_player.support.ActivityReceiver;
+import com.example.marlon.z_player.support.FragmentReceiver;
 
 
 public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
-        ActivityReciever,AdapterView.OnItemClickListener {
+        ActivityReceiver,AdapterView.OnItemClickListener {
 
 
     private ActionBar actionbar;
@@ -46,15 +44,17 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
     private Cursor cursor;
     private ViewFlipper viewfliper;
     public  ViewSwitcher viewswitcher;
-    private TextView title;
-    private TextView artist;
+    private TextView artist, title,album;
     private ImageView art;
     private Button drawer_button;
+    public  MediaPlayer mediaPlayer;
+    private RelativeLayout miniPlayer;
 
 
     private static final int LOADER_songs = 1;
     private static final int LOADER_artist = 2;
     private static final int LOADER_albums = 3;
+
 
     private final String albumbTag = "Albums";
     private final String artsitTag = "Artists";
@@ -77,35 +77,35 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
         fmanager=getFragmentManager();
 
 
+
         title = (TextView) findViewById(R.id.title);
         artist = (TextView) findViewById(R.id.name);
         art = (ImageView) findViewById(R.id.art);
 
+
         attachfrags();
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        drawerOptions = getResources().getStringArray(R.array.options);
+        drawerOptions = new String[]{artsitTag,albumbTag,songTag};
         drawerList = (ListView) findViewById(R.id.drawer_options);
         drawerList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerOptions));
         drawerList.setOnItemClickListener(this);
 
         viewswitcher = (ViewSwitcher) findViewById(R.id.change);
         viewfliper = (ViewFlipper) findViewById(R.id.target);
-        RelativeLayout miniPlayer = (RelativeLayout) findViewById(R.id.nowPlaying);
+        miniPlayer = (RelativeLayout) findViewById(R.id.nowPlaying);
         miniPlayer.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                viewswitcher.showNext();
-
+                if(mediaPlayer!=null) {
+                    viewswitcher.setDisplayedChild(1);
+                }
             }
         });
-        /* drawer_button=(Button)actionbar.getCustomView().findViewById(R.id.drawer_button);
-        drawer_button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(Gravity.LEFT);
-            }
-        });*/
+
+
+
+
 
         viewfliper.setInAnimation(this, R.anim.push_right_in);
         viewfliper.setOutAnimation(this, R.anim.push_right_out);
@@ -114,11 +114,15 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
         
 
-        actionbar.setCustomView(R.layout.custom_bar);
+        /*actionbar.setCustomView(R.layout.custom_bar);
         actionbar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionbar.setDisplayHomeAsUpEnabled(false);
         actionbar.setHomeButtonEnabled(false);
         actionbar.setDisplayShowCustomEnabled(true);
+        */
+        actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
+
     }
 
 
@@ -128,7 +132,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
                 .add(R.id.mainPlayer, new PlayerFrag(), playerTag)
                 .add(R.id.artist_Frame, new ArtistFrag(), artsitTag)
                 .add(R.id.album_Frame, new AlbumFrag(), albumbTag)
-                .add(R.id.song_Frame, new SongFrag(), songTag).commit();
+                .add(R.id.song_Frame, new SongFrag(), songTag)
+                .commit();
 
     }
 
@@ -143,19 +148,24 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] columns;
         switch (id) {
 
+
             case LOADER_songs:
+                columns=new String[]{MediaStore.Audio.Media._ID,MediaStore.Audio.Media.TITLE,MediaStore.Audio.Media.ARTIST,MediaStore.Audio.Media.ALBUM,MediaStore.Audio.Media.DATA};
                 return new CursorLoader(this,
-                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, columns, null,
                         null, MediaStore.Audio.Media.TITLE);
             case LOADER_artist:
+                columns=new String[]{MediaStore.Audio.Artists._ID,MediaStore.Audio.Artists.ARTIST};
                 return new CursorLoader(this,
-                        MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, null, null,
-                        null, MediaStore.Audio.Artists.ARTIST);
+                        MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, columns, null,
+                        null, MediaStore.Audio.Artists.ARTIST_KEY);
             case LOADER_albums:
+                columns=new String[]{MediaStore.Audio.Albums._ID,MediaStore.Audio.Albums.ALBUM,MediaStore.Audio.Albums.ALBUM_ART};
                 return new CursorLoader(this,
-                        MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null,
+                        MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, columns, null,
                         null, MediaStore.Audio.Albums.ALBUM);
             default:
                 return null;
@@ -184,7 +194,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
         }
 
         if (tag != null) {
-            ((FragmentReciever) fmanager.findFragmentByTag(tag)).setCursor(cursor);
+
+            ((FragmentReceiver) fmanager.findFragmentByTag(tag)).setCursor(cursor);
+
+
+
         }
         //Toast.makeText(this, "Loading complete for " + tag, Toast.LENGTH_SHORT).show();
 
@@ -213,7 +227,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
         viewfliper.showNext();
         if (tag == albumbTag) {
             try {
-                ((FragmentReciever) fmanager.findFragmentByTag(songTag))
+                ((FragmentReceiver) fmanager.findFragmentByTag(songTag))
                         .setSearch(select);
             } catch (ClassCastException e) {
 
@@ -221,7 +235,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
         }
         if (tag == artsitTag) {
             try {
-                ((FragmentReciever) fmanager.findFragmentByTag(albumbTag))
+                ((FragmentReceiver) fmanager.findFragmentByTag(albumbTag))
                         .setSearch(select);
             } catch (ClassCastException e) {
 
@@ -233,8 +247,9 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
 
     @Override
     public void setPlaylist(Cursor cursor) {
+        mediaPlayer=new MediaPlayer();
         viewswitcher.showNext();
-        ((FragmentReciever) fmanager.findFragmentByTag(playerTag)).setCursor(cursor);
+        ((FragmentReceiver) fmanager.findFragmentByTag(playerTag)).setCursor(cursor);
     }
 
     @Override
@@ -249,8 +264,20 @@ public class MainActivity extends Activity implements LoaderCallbacks<Cursor>,
         if (viewswitcher.getCurrentView().getId() == R.id.mainPlayer) {
             viewswitcher.setDisplayedChild(0);
         }
+        String tag = drawerOptions[position];
+
         viewfliper.setDisplayedChild(position);
         drawerLayout.closeDrawers();
 
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mediaPlayer!=null){
+            mediaPlayer.stop();
+        }
+        super.onDestroy();
     }
 }

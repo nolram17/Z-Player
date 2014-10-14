@@ -19,18 +19,19 @@ import android.widget.Toast;
 
 import com.example.marlon.z_player.R;
 import com.example.marlon.z_player.base.AlbumAdapter;
-import com.example.marlon.z_player.support.ActivityReciever;
-import com.example.marlon.z_player.support.FragmentReciever;
+import com.example.marlon.z_player.support.ActivityReceiver;
+import com.example.marlon.z_player.support.FragmentReceiver;
 
 import java.util.ArrayList;
 
 
-public class AlbumFrag extends Fragment implements FragmentReciever {
+public class AlbumFrag extends Fragment implements FragmentReceiver {
 	GridView covers;
-	ActivityReciever parentActivity;
+	ActivityReceiver parentActivity;
 	TextView title;
 	ArrayList<String> albums;
 	AlbumAdapter adapter;
+
 	
 	
 	@Override
@@ -39,12 +40,12 @@ public class AlbumFrag extends Fragment implements FragmentReciever {
 		  View view= inflater.inflate( R.layout.album_frag, container,false);
 		  title= (TextView)view.findViewById(R.id.fragtitle);
 		  covers= (GridView)view.findViewById(R.id.album_art);
-		  parentActivity = (ActivityReciever)getActivity();
+		  parentActivity = (ActivityReceiver)getActivity();
 		  title.setText(getTag());
 		  covers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+			public void onItemClick(AdapterView<?> arg0, View view, int position,
 					long arg3) {
 				Cursor temp= adapter.getCursor();
 						temp.moveToPosition(position);
@@ -52,31 +53,11 @@ public class AlbumFrag extends Fragment implements FragmentReciever {
 				
 			}
 		});
+
 		  
 		return  view;
 	}
 
-	private ArrayList<String> getalbums() {
-		ContentResolver cr = ((ContextWrapper) parentActivity).getContentResolver();
-		Cursor cursor= cr.query(
-				MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-			    null, 
-			    null, 
-			    null, 
-			    MediaStore.Audio.Albums.ALBUM
-			    );
-		
-		
-		cursor.moveToFirst();
-		ArrayList<String> temp= new ArrayList<String>();
-		while(cursor.moveToNext()){                     
-			temp.add(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)));
-		}
-		return temp;
-	}
-	
-	
-	
 	@Override
 	public void setCursor(Cursor cursor) {
 
@@ -86,7 +67,7 @@ public class AlbumFrag extends Fragment implements FragmentReciever {
 	
 	@Override
 	public void setSearch(String variable) {
-		
+
 		if (variable!=null) {
 			ContentResolver cr = ((ContextWrapper) parentActivity).getContentResolver();
 			Cursor cursor = cr.query(

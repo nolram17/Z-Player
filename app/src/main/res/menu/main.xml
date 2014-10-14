@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/play_all"
+        android:title="Play all"
+        android:orderInCategory="1"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/A"
+        android:title="A"
+        android:orderInCategory="2"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/B"
+        android:title="B"
+        android:orderInCategory="3"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/C"
+        android:title="C"
+        android:orderInCategory="4"
+        android:showAsAction="never"
+        />
 </menu>

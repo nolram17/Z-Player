@@ -12,37 +12,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 import com.example.marlon.z_player.R;
 import com.example.marlon.z_player.base.SongAdapter;
-import com.example.marlon.z_player.support.ActivityReciever;
-import com.example.marlon.z_player.support.FragmentReciever;
+import com.example.marlon.z_player.support.ActivityReceiver;
+import com.example.marlon.z_player.support.FragmentReceiver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+public class SongFrag extends Fragment implements FragmentReceiver {
 
-public class SongFrag extends Fragment implements FragmentReciever {
 
-	HashMap<String, String> songlist;
-	ArrayList<String> songs;
-	ArrayAdapter<String> adapter;
-	ArrayList<String> paths;
 	ListView list;
-	ActivityReciever reciever;
+	ActivityReceiver reciever;
 	TextView title;
 	
-	SongAdapter dapter;
+	SongAdapter songAdapter;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View v=inflater.inflate(R.layout.song_frag,container,false);
 	    list=(ListView)v.findViewById(R.id.artistlist);
-	    reciever=(ActivityReciever)getActivity();
+	    reciever=(ActivityReceiver)getActivity();
 	   
 	    title= (TextView)v.findViewById(R.id.fragtitle);
 	    title.setText(getTag());
@@ -51,7 +44,7 @@ public class SongFrag extends Fragment implements FragmentReciever {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Cursor c=dapter.getCursor();
+				Cursor c= songAdapter.getCursor();
 				c.moveToPosition(position);
 				reciever.setPlaylist(c);
 				
@@ -62,13 +55,9 @@ public class SongFrag extends Fragment implements FragmentReciever {
 
 	@Override
 	public void setCursor(Cursor cursor) {
-		songs=new ArrayList<String>();
-		while(cursor.moveToNext()){
-			songs.add(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-		}
-		adapter= new ArrayAdapter<String>((Context) reciever, android.R.layout.simple_list_item_1,songs);
-	    dapter=new SongAdapter((Context) reciever, cursor, 0);
-		list.setAdapter(dapter);
+
+	    songAdapter =new SongAdapter((Context) reciever, cursor, 0);
+		list.setAdapter(songAdapter);
 	}
 
 	@Override
@@ -81,15 +70,7 @@ public class SongFrag extends Fragment implements FragmentReciever {
 					new String[] { variable },
 					MediaStore.Audio.Media.TRACK);
 			cursor.moveToFirst();
-			ArrayList<String> temp = new ArrayList<String>();
-			while (cursor.moveToNext()) {
-				temp.add(cursor.getString(cursor
-						.getColumnIndex(MediaStore.Audio.Media.TITLE)));
-			}
-			songs.clear();
-			songs.addAll(temp);
-			adapter.notifyDataSetChanged();
-			dapter.changeCursor(cursor);
+			songAdapter.changeCursor(cursor);
 			
 		}
 	}
